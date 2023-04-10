@@ -1,0 +1,39 @@
+version: '3'
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    networks:
+      - app_garupa_network
+  db:
+    image: postgres:15-alpine
+    restart: always
+    container_name: garupa-db
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - app_garupa_network
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - app_garupa_network
+networks:
+  app_garupa_network:
+
+volumes:
+  postgres-db:
