@@ -50,7 +50,7 @@ controller.updateUser = async (req, res) => {
     const { email } = req.body;
 
     const user = await verifyUser({ id: req.params.id });
-    const emailExists = await verifyUser({ email: email });
+    const emailExists = await verifyUser({ email: email || null });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
