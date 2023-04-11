@@ -1,11 +1,12 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
 const db = new Sequelize(
-  process.env.POSTGRES_DB || 'garupa-db',
-  process.env.POSTGRES_USER || 'postgres',
-  process.env.POSTGRES_PASSWORD || 'postgres',
+  process.env.POSTGRES_DB,
+  process.env.POSTGRES_USER,
+  process.env.POSTGRES_PASSWORD,
   {
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST,
     dialect: 'postgres',
   },
 );

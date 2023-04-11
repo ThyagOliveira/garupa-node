@@ -1,12 +1,12 @@
 const model = require('../models/users.model');
-const controller = {};
+const userController = {};
 
-const verifyUser = async (whereCondition) => {
+userController.verifyUser = async (whereCondition) => {
   const user = await model.findOne({ where: whereCondition });
   return user;
 };
 
-controller.getAllUsers = async (req, res) => {
+userController.getAllUsers = async (req, res) => {
   try {
     const users = await model.findAll({ order: ['id'] });
     res.status(200).json(users);
@@ -16,9 +16,9 @@ controller.getAllUsers = async (req, res) => {
   }
 };
 
-controller.getUserById = async (req, res) => {
+userController.getUserById = async (req, res) => {
   try {
-    const user = await verifyUser({ id: req.params.id });
+    const user = await userController.verifyUser({ id: req.params.id });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -30,9 +30,11 @@ controller.getUserById = async (req, res) => {
   }
 };
 
-controller.createUser = async (req, res) => {
+userController.createUser = async (req, res) => {
   try {
-    const userExists = await verifyUser({ email: req.body.email });
+    const userExists = await userController.verifyUser({
+      email: req.body.email,
+    });
 
     if (userExists) {
       return res.status(400).json({ message: 'Email already registered' });
@@ -45,12 +47,14 @@ controller.createUser = async (req, res) => {
   }
 };
 
-controller.updateUser = async (req, res) => {
+userController.updateUser = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await verifyUser({ id: req.params.id });
-    const emailExists = await verifyUser({ email: email || null });
+    const user = await userController.verifyUser({ id: req.params.id });
+    const emailExists = await userController.verifyUser({
+      email: email || null,
+    });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -68,9 +72,9 @@ controller.updateUser = async (req, res) => {
   }
 };
 
-controller.deleteUser = async (req, res) => {
+userController.deleteUser = async (req, res) => {
   try {
-    const user = await verifyUser({ id: req.params.id });
+    const user = await userController.verifyUser({ id: req.params.id });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -83,4 +87,4 @@ controller.deleteUser = async (req, res) => {
   }
 };
 
-module.exports = controller;
+module.exports = userController;
