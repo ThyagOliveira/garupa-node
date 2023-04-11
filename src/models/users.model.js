@@ -1,5 +1,6 @@
 const sequelize = require('sequelize');
 const db = require('../config/database.config');
+const bcrypt = require('bcryptjs');
 
 const users = db.define(
   'users',
@@ -32,5 +33,14 @@ const users = db.define(
     timestamps: true,
   },
 );
+
+users.beforeSave(async function (user) {
+  if (user.isNewRecord || user.changed('password')) {
+    const hash = await bcrypt.hash(user.password, 10);
+    user.password = hash;
+  }
+
+  return user;
+});
 
 module.exports = users;

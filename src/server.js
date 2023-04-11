@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./config/database.config');
-const userRoutes = require('./routes/users.routes');
+const apiRoutes = require('./routes/api.routes');
+require('dotenv').config();
 
 db.authenticate()
   .then(() => {
@@ -15,7 +16,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/users', userRoutes);
+app.use('/api', apiRoutes);
 
 const PORT = process.env.PORT || 3000;
 
