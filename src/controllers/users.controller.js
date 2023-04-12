@@ -8,7 +8,10 @@ userController.verifyUser = async (whereCondition) => {
 
 userController.getAllUsers = async (req, res) => {
   try {
-    const users = await model.findAll({ order: ['id'] });
+    const users = await model.findAll({
+      order: ['id'],
+      attributes: { exclude: ['password'] },
+    });
     res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -24,7 +27,10 @@ userController.getUserById = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json(user);
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...userData } = user.get({ plain: true });
+
+    res.status(200).json(userData);
   } catch (error) {
     res.status(500).json({ message: error });
   }
@@ -41,7 +47,11 @@ userController.createUser = async (req, res) => {
     }
 
     const user = await model.create(req.body);
-    res.status(201).json(user);
+
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...userData } = user.get({ plain: true });
+
+    res.status(201).json(userData);
   } catch (error) {
     res.status(500).json({ message: error });
   }
@@ -66,7 +76,10 @@ userController.updateUser = async (req, res) => {
 
     const updatedUser = await user.update(req.body);
 
-    res.status(200).json(updatedUser);
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...updatedUserData } = updatedUser.get({ plain: true });
+
+    res.status(200).json(updatedUserData);
   } catch (error) {
     res.status(500).json({ message: error });
   }
